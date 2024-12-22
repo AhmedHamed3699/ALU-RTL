@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_verilog_multiplier;
+module tb_multiplier_signed_star;
 
     reg signed [31:0] a;
     reg signed [31:0] b;
@@ -33,49 +33,49 @@ module tb_verilog_multiplier;
         a = 32'sd10;  // Positive
         b = -32'sd5;  // Negative
         #10;
-        report_result(a, b, product, (product == a * b), 1);
+        report_result(a, b, product, (product == -64'd50), 1);
 
         // TestCase 2: Multiplication of two positive numbers
         a = 32'sd15;
         b = 32'sd20;
         #10;
-        report_result(a, b, product, (product == a * b), 2);
+        report_result(a, b, product, (product == 64'd300), 2);
 
         // TestCase 3: Multiplication of two negative numbers
         a = -32'sd5;
         b = -32'sd4;
         #10;
-        report_result(a, b, product, (product == a * b), 3);
+        report_result(a, b, product, (product == 64'd20), 3);
 
         // TestCase 4: Multiplication of a negative and a positive number
         a = -32'sd8;
         b = 32'sd3;
         #10;
-        report_result(a, b, product, (product == a * b), 4);
+        report_result(a, b, product, (product == -64'd24), 4);
 
         // TestCase 5: Multiplication by zero
         a = 32'sd0;
         b = 32'sd7;
         #10;
-        report_result(a, b, product, (product == a * b), 5);
+        report_result(a, b, product, (product == 64'd0), 5);
 
         // TestCase 6: Multiplication by one
         a = 32'sd1;
         b = -32'sd9;
         #10;
-        report_result(a, b, product, (product == a * b), 6);
+        report_result(a, b, product, (product == -64'd9), 6);
 
         // TestCase 7: Random test case 1
         a = 32'sd17;
         b = -32'sd3;
         #10;
-        report_result(a, b, product, (product == a * b), 7);
+        report_result(a, b, product, (product == -64'd51), 7);
 
         // TestCase 8: Random test case 2
         a = -32'sd10;
         b = 32'sd9;
         #10;
-        report_result(a, b, product, (product == a * b), 8);
+        report_result(a, b, product, (product == -64'd90), 8);
 
         // Final report
         $display("Total Success Test Cases: %d", success_count);

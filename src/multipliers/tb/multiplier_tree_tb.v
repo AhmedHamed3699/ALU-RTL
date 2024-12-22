@@ -2,20 +2,16 @@ module tb_TM32;
 
     reg [31:0] in1;
     reg [31:0] in2;
-
     wire [63:0] out;
 
-    TM32 uut (
-        .clk(clk),
-        .rst(rst),
-        .in1(in1),
-        .in2(in2),
-        .out(out)
+    WTM32 uut (
+        .op1(in1),
+        .op2(in2),
+        .result(out)
     );
 
     integer success_count = 0;
     integer failure_count = 0;
-
 
     task report_result(input [31:0] a, input [31:0] b, input [63:0] product, input success, input [3:0] test_case_number);
         begin
@@ -31,46 +27,48 @@ module tb_TM32;
 
     initial begin
         // Test Case 1: Multiplication of a positive and a negative number
-        in1 = 32'd10; in2 = 32'd-5; // Expected output: -50
+        in1 = 32'd10; in2 = -32'd5; // Expected output: -50
         #10;
-        report_result(in1, in2, out,(out == in1 * in2) ,1);
+        report_result(in1, in2, out, (out == -64'd50), 1);  // Correct format for negative value
 
         // Test Case 2: Multiplication of two positive numbers
         in1 = 32'd20; in2 = 32'd15; // Expected output: 300
         #10;
-        report_result(in1, in2, out, (out == in1 * in2), 2);
+        report_result(in1, in2, out, (out == 64'd300), 2);
 
         // Test Case 3: Multiplication of two negative numbers
-        in1 = 32'd-5; in2 = 32'd-6; // Expected output: 30
+        in1 = -32'd5; in2 = -32'd6; // Expected output: 30
         #10;
-        report_result(in1, in2, out, (out == in1 * in2), 3);
+        report_result(in1, in2, out, (out == 64'd30), 3);
 
         // Test Case 4: Multiplication of a negative and a positive number
-        in1 = 32'd-100; in2 = 32'd25; // Expected output: -2500
+        in1 = -32'd100; in2 = 32'd25; // Expected output: -2500
         #10;
-        report_result(in1, in2, out, (out == in1 * in2), 4);
+        report_result(in1, in2, out, (out == -64'd2500), 4);  // Correct format for negative value
 
         // Test Case 5: Multiplication by zero
         in1 = 32'd0; in2 = 32'd50; // Expected output: 0
         #10;
-        report_result(in1, in2, out, (out == in1 * in2), 5);
+        report_result(in1, in2, out, (out == 64'd0), 5);
 
         // Test Case 6: Multiplication by one
         in1 = 32'd1; in2 = 32'd100; // Expected output: 100
         #10;
-        report_result(in1, in2, out,(out == in1 * in2), 6);
+        report_result(in1, in2, out, (out == 64'd100), 6);
 
         // Test Case 7: Additional random test case 1
-        in1 = 32'd-123; in2 = 32'd456; // Expected output: -56148
+        in1 = -32'd123; in2 = 32'd456; // Expected output: -56088
         #10;
-        report_result(in1, in2, out, (out == in1 * in2), 7);
+        report_result(in1, in2, out, (out == -64'd56088), 7);  // Correct format for negative value
 
         // Test Case 8: Additional random test case 2
-        in1 = 32'd1000; in2 = 32'd-25; // Expected output: -25000
+        in1 = 32'd1000; in2 = -32'd25; // Expected output: -25000
         #10;
-        report_result(in1, in2, out, (out == in1 * in2), 8);
+        report_result(in1, in2, out, (out == -64'd25000), 8);  // Correct format for negative value
 
         // End simulation
         $display("Total Test Cases: %0d Successes, %0d Failures", success_count, failure_count);
         $stop;
     end
+
+endmodule
