@@ -1,4 +1,4 @@
-module TM32 (
+module tree_multiplier (
     input [31:0] in1,
     input [31:0] in2,
     output [63:0] out
@@ -11,7 +11,7 @@ module TM32 (
     assign A = in1;
     assign B = in2;
 
-    WTM32 TM (
+    tree_multiplier32 TM (
         .A(A),
         .B(B),
         .product(product)

@@ -1,4 +1,4 @@
-module WTM32(op1,op2,result);
+module tree_multiplier32(op1,op2,result);
     
 input [31:0] op1;
 input [31:0] op2;
@@ -11,26 +11,26 @@ assign b = (op2[31] == 1)? ((~op2) + 1) : op2;
 
 wire [15:0]c[15:0];
 
-WTM8 w1(a[7:0],b[7:0],c[0]);
-WTM8 w2(a[7:0],b[15:8],c[1]);
-WTM8 w3(a[7:0],b[23:16],c[2]);
-WTM8 w4(a[7:0],b[31:24],c[3]);
+tree_multiplier8 w1(a[7:0],b[7:0],c[0]);
+tree_multiplier8 w2(a[7:0],b[15:8],c[1]);
+tree_multiplier8 w3(a[7:0],b[23:16],c[2]);
+tree_multiplier8 w4(a[7:0],b[31:24],c[3]);
 
-WTM8 w5(a[15:8],b[7:0],c[4]);
-WTM8 w6(a[15:8],b[15:8],c[5]);
-WTM8 w7(a[15:8],b[23:16],c[6]);
-WTM8 w8(a[15:8],b[31:24],c[7]);
+tree_multiplier8 w5(a[15:8],b[7:0],c[4]);
+tree_multiplier8 w6(a[15:8],b[15:8],c[5]);
+tree_multiplier8 w7(a[15:8],b[23:16],c[6]);
+tree_multiplier8 w8(a[15:8],b[31:24],c[7]);
 
-WTM8 w9(a[23:16],b[7:0],c[8]);
-WTM8 w10(a[23:16],b[15:8],c[9]);
-WTM8 w11(a[23:16],b[23:16],c[10]);
-WTM8 w12(a[23:16],b[31:24],c[11]);
+tree_multiplier8 w9(a[23:16],b[7:0],c[8]);
+tree_multiplier8 w10(a[23:16],b[15:8],c[9]);
+tree_multiplier8 w11(a[23:16],b[23:16],c[10]);
+tree_multiplier8 w12(a[23:16],b[31:24],c[11]);
 
 
-WTM8 w13(a[31:24],b[7:0],c[12]);
-WTM8 w14(a[31:24],b[15:8],c[13]);
-WTM8 w15(a[31:24],b[23:16],c[14]);
-WTM8 w16(a[31:24],b[31:24],c[15]);
+tree_multiplier8 w13(a[31:24],b[7:0],c[12]);
+tree_multiplier8 w14(a[31:24],b[15:8],c[13]);
+tree_multiplier8 w15(a[31:24],b[23:16],c[14]);
+tree_multiplier8 w16(a[31:24],b[31:24],c[15]);
 
 assign product[7:0]=c[0][7:0];
 
