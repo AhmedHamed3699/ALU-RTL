@@ -3,7 +3,7 @@ module ALU (
     input wire reset,
     input wire [31:0] A,
     input wire [31:0] B,
-    input wire [2:0] op_select, // 0: add_integer, 1: mult_integer , 2: add_floating, 3: mult_floating
+    input wire op_select, //  0: add_floating, 1: mult_floating
     input wire cin,             
     output reg [63:0] result,
     output reg overflow,
@@ -23,28 +23,15 @@ module ALU (
     FloatingPointAdder floating_adder (
         .A(A_in_reg),
         .B(B_in_reg),
-        .Sum(add_float_result),
-        .Cout(cout_floating),
-        .Overflow(overflow_floating)
+        .Sum(add_float_result)       
     );
-    CarryBypassAdder int_adder (
-        .A(A_in_reg),
-        .B(B_in_reg),
-        .Sum(add_int_result),
-        .Cin(cin_in_reg),
-        .Cout(cout_integer),
-        .Overflow(overflow_integer)
-    );
+
     FloatingPointMultiplier floating_multiplier (
         .A(A_in_reg),
         .B(B_in_reg),
         .Product(mul_float_result)
     );
-    SequentialMultiplier integer_multiplier (
-        .A(A_in_reg),
-        .B(B_in_reg),
-        .Product(mul_int_result)
-    );
+
 
     InputRegister input_reg (
         .clk(clk),

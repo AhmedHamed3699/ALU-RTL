@@ -33,6 +33,17 @@ module FloatingPointadder_tb;
             $display("TestCase#2: failed with input %h and %h and Output %h", A, B, Sum);
         end
 
+        // Test Case 3: Addition of positive and negative number
+              A = 32'b00000010001001000000000000000000;  //34.0
+              B = 32'b10000001001001000000000000000000;  //-34.0
+        #10;
+        if (Sum == 32'b00000001101101100000000000000000) begin //0.0
+            $display("TestCase#3: success");
+            success_cases = success_cases + 1;
+        end else begin
+            $display("TestCase#3: failed with input %h and %h and Output %h", A, B, Sum);
+        end
+
         // Test Case 4: Addition of positive and positive number
         A = 32'b00000001101000000000000000000000; //    
         B = 32'b00000001001001000000000000000000; // 

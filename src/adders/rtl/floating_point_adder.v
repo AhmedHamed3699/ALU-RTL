@@ -1,4 +1,4 @@
-//in IEEE standard number=(-1)^sign * 2^(exponent) * (1.mantissa)
+//in IEEE standard number= (-1)^sign * 2^(exponent) * (1.mantissa)
 //IEEE standard to get the sum of two numbers :
 //1- convert to binary
 //2- get the sign,exponent and the mantissa of each number
@@ -20,96 +20,100 @@ module FloatingPointAdder (
   reg [7:0] exponent_A, exponent_B;
   reg signed [7:0] Sum_exponent;
 
-  reg signed [22:0] mantissa_A, mantissa_B; //
+  reg signed [22:0] mantissa_A, mantissa_B; 
   reg signed [22:0] mantissa_Sum;
 
-  reg signed [31:0] mantissa_A_32, mantissa_B_32,mantissa_A_32neg,mantissa_B_32neg;
-  wire signed [31:0] mantissa_Sum_add, mantissa_Sum_subAB,mantissa_Sum_subBA;
+  reg signed [31:0] mantissa_A_32, mantissa_B_32,minus_mantissa_A_32,minus_mantissa_B_32;
+  wire signed [31:0] mantissa_addAB, mantissa_subAB,mantissa_subBA;
   
   reg [21:0] temp_mantissa;
   integer i;
-  wire cout,cin;
-  assign cin=0;
+  wire cout;
+  wire overflow1,overflow2,overflow3;
   reg signed [7:0] exponent_diff;
 
-   //module instantiation
-   CarryBypassAdder fraction_add(
+   CarryBypassAdder mantissa_add(
         .A(mantissa_A_32),
         .B(mantissa_B_32),
-        .Cin(cin),
-        .Sum(mantissa_Sum_add),
+        .Cin(1'b0),
+        .Sum(mantissa_addAB),
         .Cout(cout),
-        .Overflow()
+        .Overflow(overflow1)
       );
-  CarryBypassAdder fraction_sub12(
+  CarryBypassAdder mantissa_subA_B(
        .A(mantissa_A_32),
-       .B(mantissa_B_32neg),
-       .Cin(cin),
-       .Sum(mantissa_Sum_sub12),
-       .Cout(cout)
+       .B(minus_mantissa_A_32),
+       .Cin(1'b0),
+       .Sum(mantissa_subAB),
+       .Cout(cout),
+       .Overflow(overflow2)
      );
-  CarryBypassAdder fraction_sub21(
-       .A(mantissa_A_32neg),
+  CarryBypassAdder mantissa_subB_A(
+       .A(minus_mantissa_A_32),
        .B(mantissa_B_32),
-       .Cin(cin),
-       .Sum(mantissa_Sum_sub21),
-       .Cout(cout)
+       .Cin(1'b0),
+       .Sum(mantissa_subBA),
+       .Cout(cout),
+       .Overflow(overflow3)
      );
 
   always @* begin
-     sign_A = A[31];
-     sign_B = B[31];
-     exponent_A = A[30:23];
-     exponent_B = B[30:23];
+    //decompose numbers into sign,exponent,mantissa
+     sign_A = A[31]; //most significant bit 
+     sign_B = B[31]; 
+
+     exponent_A = A[30:23];    // 8-bits 30 -> 23
+     exponent_B = B[30:23];    
+
      mantissa_A =  A[22:0];
      mantissa_B =  B[22:0];
 
+    //compute the exponent difference then align the mantissas
     exponent_diff = exponent_A - exponent_B;
     if (exponent_diff < 0) begin
-      exponent_diff = -exponent_diff;
-      mantissa_A = $signed(mantissa_A) >>> exponent_diff;
       Sum_exponent = exponent_B;
+      mantissa_A = $signed(mantissa_A) >>> -exponent_diff; 
       Sum_sign = sign_B;
     end else begin
-      mantissa_B = $signed(mantissa_B) >>> exponent_diff;
       Sum_exponent = exponent_A;
+      mantissa_B = $signed(mantissa_B) >>> exponent_diff;
       Sum_sign = sign_A;
     end
 	 
-   mantissa_A_32 = { {9{mantissa_A[22]}}, mantissa_A };
-   mantissa_B_32 = { {9{mantissa_B[22]}}, mantissa_B };
+    mantissa_A_32 = { {9{mantissa_A[22]}}, mantissa_A };  //sign-expansion with the sign bit
+    mantissa_B_32 = { {9{mantissa_B[22]}}, mantissa_B };  
 
-	 if (sign_A == sign_B) begin
-      mantissa_Sum=mantissa_Sum_add[22:0];
-
+	  if (sign_A == sign_B) begin
+      mantissa_Sum=mantissa_addAB[22:0];   //same sign add numbers
     end else begin
-      if (mantissa_A > mantissa_B) begin
-        mantissa_B_32neg= -mantissa_B_32;
-        mantissa_Sum=mantissa_Sum_subAB[22:0];
+      if (mantissa_A > mantissa_B) begin    //different signs subtract 
+        minus_mantissa_A_32= -mantissa_B_32;
+        mantissa_Sum=mantissa_subAB[22:0];
         Sum_sign = sign_A;
       end else begin
-        mantissa_A_32neg= -mantissa_A_32;
-        mantissa_Sum=mantissa_Sum_subBA[22:0];
+        minus_mantissa_A_32= -mantissa_A_32;
+        mantissa_Sum=mantissa_subBA[22:0];
         Sum_sign = sign_B;
       end
+    end
+
+    //normalize mantissa after summation 
+	  temp_mantissa=mantissa_Sum[21:0];
+    if (mantissa_Sum==23'b0) begin
+      temp_mantissa=22'b0;
+    end else begin
+      for(i = 0; i < 22; i = i + 1) begin
+        if(temp_mantissa[21]==0) begin
+        temp_mantissa = temp_mantissa <<1;
+        Sum_exponent =Sum_exponent-1;
         end
-	 temp_mantissa=mantissa_Sum[21:0];
-      if (mantissa_Sum==23'b0) begin
-        temp_mantissa=22'b0;
       end
-      else begin
-        for(i = 0; i < 22; i = i + 1) begin
-            if(temp_mantissa[21]==0) begin
-            temp_mantissa = temp_mantissa <<1;
-            Sum_exponent =Sum_exponent-1;
-            end
-        end
-      end
+    end
     mantissa_Sum[21:0]=temp_mantissa;
 	 
   end
 
-  // Construct the Sum
+  //reassmble the Sum
   assign Sum = {Sum_sign, Sum_exponent, mantissa_Sum};
 
 endmodule
