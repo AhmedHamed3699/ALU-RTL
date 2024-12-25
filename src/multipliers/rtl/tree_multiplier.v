@@ -12,9 +12,9 @@ module tree_multiplier (
     assign B = in2;
 
     tree_multiplier32 TM (
-        .A(A),
-        .B(B),
-        .product(product)
+        .op1(A),
+        .op2(B),
+        .result(product)
     );
 
     assign out = product;
