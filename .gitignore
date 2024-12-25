@@ -1,0 +1,15 @@
+*.mti
+*.mpf
+*.mpf_new
+src/ALU-RTL.cr.mti
+*.mpf_new
+*.mpf
+*.wlf
+
+wlft*
+*.qdb
+*qpg
+*qtl
+exe*
+
+
