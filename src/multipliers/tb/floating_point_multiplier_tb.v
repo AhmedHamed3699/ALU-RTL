@@ -2,7 +2,7 @@ module tb_floating_multiplier;
     reg [31:0] A, B; 
     wire [31:0] Product; 
 
-    floating_point_multiplier DUT (
+    FloatingPointMultiplier DUT (
         .A(A),
         .B(B),
         .Product(Product)
@@ -63,7 +63,7 @@ module tb_floating_multiplier;
     #10;
     check_result(A, B, create_fp(0, 8'b00000000, 23'b00000000000000000000000), Product); // Expected: 0.0
 
-    // Test Case 8: Opposite signs
+    // Test Case 4: Opposite signs
     A = create_fp(0, 8'b10000001, 23'b01010000000000000000000);    // 5.25
     B = create_fp(1, 8'b10000000, 23'b00011001100110011001101);    // -2.2
     test_case_number = test_case_number + 1;     

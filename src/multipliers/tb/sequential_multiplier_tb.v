@@ -1,8 +1,8 @@
-module sequential_multiplier_tb;
+module SequentialMultiplier_tb;
     reg [31:0] A, B; 
     wire [63:0] Product; 
 
-    sequential_multiplier DUT (
+    SequentialMultiplier DUT (
         .A(A),
         .B(B),
         .Product(Product)
