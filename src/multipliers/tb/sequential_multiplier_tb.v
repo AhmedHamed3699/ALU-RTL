@@ -32,16 +32,16 @@ module sequential_multiplier_tb;
     endtask
 
     initial begin
-        // ultiplication of a positive and a negative number
-        A = 20;       
-        B = -3;       
+        // multiplication of a positive and a negative number
+        A = 60;       
+        B = -76;       
         test_case_number = test_case_number + 1;
         #10;
-        check_result(A, B, -64'd60, Product); 
+        check_result(A, B, -64'd1560, Product); 
 
-        //Multiplication of two positive numbers
-        A = 77;       
-        B = 88;       
+        //Multiplication of Max postive numbers
+        A = 98765; //2^32 -1       
+        B = 98765;       
         test_case_number = test_case_number + 1;
         #10;
         check_result(A, B, 64'd6776, Product);

@@ -21,7 +21,7 @@ genvar i;
 reg M;
 generate
     for(i=1; i< 33; i=i+1)  begin
-        CarryBypassAdder SAbits_(Ain, ShiftAdd[i-1][63:32], 1'b0, sums[i-1],carries[i-1],acum[i-1]);
+        CarryBypassAdder ShiftAddbits_(Ain, ShiftAdd[i-1][63:32], 1'b0, sums[i-1],carries[i-1],acum[i-1]);
         assign ShiftAdd[i][63:32] = (ShiftAdd[i-1][0]==0) ? {1'b0,ShiftAdd[i-1][63:33]} : {carries[i-1],sums[i-1][31:1]};
         assign ShiftAdd[i][31:0] = (ShiftAdd[i-1][0]==0) ? ShiftAdd[i-1][32:1]: {sums[i-1][0],ShiftAdd[i-1][31:1]};
     end
